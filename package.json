@@ -1,12 +1,12 @@
 {
-  "name": "ping-pong",
+  "name": "Sample Project",
   "version": "1.0.0",
-  "description": "\"\"",
+  "description": "This is a scaffold for a sample project",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Dani Trulls and Jared Eiseman",
   "license": "ISC",
   "devDependencies": {
     "bower-files": "^4.0.0",
