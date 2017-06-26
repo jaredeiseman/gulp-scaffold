@@ -8,16 +8,22 @@ var utilities = require('gulp-util');
 var buildProduction = utilities.env.production;
 var del = require('del');
 var jshint = require('gulp-jshint'); //to use linting, correct sintax
+var browserSync = require('browser-sync').create();
+var sass = require('gulp-sass');
+var sourcemaps = require('gulp-sourcemaps');
 
-//----------var liv (for boostrap) -----//
-//----------vars for SASS -----//
-// var browserSync = require('browser-sync').create();
-// var sass = require('gulp-sass');
-// var sourcemaps = require('gulp-sourcemaps');
-
-
-// gulp.task('myTask', function(){
-//   console.log("hello gulp!");
+var lib = require('bower-files')();
+// USE THIS INSTEAD FOR LIB IF YOU INSTALL BOOTSTRAP
+// var lib = require('bower-files')({
+//   "overrides":{
+//     "bootstrap" : {
+//       "main": [
+//         "less/bootstrap.less",
+//         "dist/css/bootstrap.css",
+//         "dist/js/bootstrap.js"
+//       ]
+//     }
+//   }
 // });
 
 //2 runs separately from the chain
@@ -49,24 +55,23 @@ gulp.task('minifyScripts', ['jsBrowserify'], function() {
     .pipe(gulp.dest('./build/js'));
 });
 
-// //6 place downloaded with bower js files in build.js
-// gulp.task('jsBower', function() {
-//   return gulp.src(lib.ext('js').files)
-//     .pipe(concat('vendor.min.js'))
-//     .pipe(uglify())
-//     .pipe(gulp.dest('./build/js'));
-// });
-//
-//
-// //7 place downloaded with bower css files in build/vendor.css
-// gulp.task('cssBower', function() {
-//   return gulp.src(lib.ext('css').files)
-//     .pipe(concat('vendor.css'))
-//     .pipe(gulp.dest('./build/css'));
-// });
-//
-// //8 chain bower tasks together
-// gulp.task('bower', ['jsBower', 'cssBower']);
+//6 place downloaded with bower js files in build.js
+gulp.task('bowerJS', function() {
+  return gulp.src(lib.ext('js').files)
+    .pipe(concat('vendor.min.js'))
+    .pipe(uglify())
+    .pipe(gulp.dest('./build/js'));
+});
+
+//7 place downloaded with bower css files in build/vendor.css
+gulp.task('bowerCSS', function() {
+  return gulp.src(lib.ext('css').files)
+    .pipe(concat('vendor.css'))
+    .pipe(gulp.dest('./build/css'));
+});
+
+//8 chain bower tasks together
+gulp.task('bower', ['bowerJS', 'bowerCSS']);
 
 //9 Remove previous tmp and build files prior to rebuilding
 gulp.task("clean", function(){
@@ -79,5 +84,40 @@ gulp.task("build",['clean'], function(){
   } else {
     gulp.start('jsBrowserify');
   }
-  // gulp.start('bower');
+  gulp.start('bower');
+});
+
+gulp.task('serve', function() {
+  browserSync.init({
+    server: {
+      baseDir: "./",
+      index: "index.html"
+    }
+  });
+
+  gulp.watch(['js/*.js'], ['jsBuild']);
+  gulp.watch(['bower.json'], ['bowerBuild']);
+  gulp.watch(["scss/**/*.scss"], ['cssBuild']);
+  gulp.watch(['*.html'], ['htmlBuild']);
+});
+
+gulp.task('jsBuild', ['jsBrowserify', 'jshint'], function(){
+  browserSync.reload();
+});
+
+gulp.task('bowerBuild', ['bower'], function(){
+  browserSync.reload();
+});
+
+gulp.task('cssBuild', function() {
+  return gulp.src(['scss/*.scss'])
+    .pipe(sourcemaps.init())
+    .pipe(sass())
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest('./build/css'))
+    .pipe(browserSync.stream());
+});
+
+gulp.task('htmlBuild', function() {
+  browserSync.reload();
 });
