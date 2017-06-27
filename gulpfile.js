@@ -11,6 +11,7 @@ var jshint = require('gulp-jshint'); //to use linting, correct sintax
 var browserSync = require('browser-sync').create();
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
+var babel = require('gulp-babel');
 
 var lib = require('bower-files')();
 // USE THIS INSTEAD FOR LIB IF YOU INSTALL BOOTSTRAP
@@ -49,7 +50,7 @@ gulp.task('jsBrowserify', ['concatInterface'], function(){
 });
 
 //5 Minifying compresses scripts.
-gulp.task('minifyScripts', ['jsBrowserify'], function() {
+gulp.task('minifyScripts', ['babel'], function() {
   return gulp.src('./build/js/app.js')
     .pipe(uglify())
     .pipe(gulp.dest('./build/js'));
@@ -76,6 +77,14 @@ gulp.task('bower', ['bowerJS', 'bowerCSS']);
 //9 Remove previous tmp and build files prior to rebuilding
 gulp.task("clean", function(){
   return del(['build', 'tmp']);
+});
+
+gulp.task('babel', ['jsBrowserify'], function() {
+  return gulp.src('./build/js/app.js')
+    .pipe(babel({
+        presets: ['es2015']
+    }))
+    .pipe(gulp.dest('./build/js'));
 });
 
 gulp.task("build",['clean'], function(){

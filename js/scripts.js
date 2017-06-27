@@ -4,7 +4,7 @@ var ExampleModule = function(args) {
 };
 
 ExampleModule.prototype.examplePrototype = function() {
-  return 'this is an example prototype method';
+  return `this is an example prototype method`;
 };
 
 exports.exampleModule = ExampleModule;

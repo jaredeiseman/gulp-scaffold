@@ -1,5 +1,5 @@
 {
-  "name": "Sample Project",
+  "name": "Sample-Project",
   "version": "1.0.0",
   "description": "This is a scaffold for a sample project",
   "main": "index.js",
@@ -22,5 +22,9 @@
     "gulp-util": "^3.0.8",
     "jshint": "^2.9.5",
     "vinyl-source-stream": "^1.1.0"
+  },
+  "dependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "gulp-babel": "^6.1.2"
   }
 }
