@@ -7,6 +7,7 @@
 * Use npm install, and bower install to install necessary dependencies
 * Use gulp build to build js and css files to be included
 * Use gulp serve to launch the development server
+* 'rm -rf .git' and run a new 'git init' to instantiate your own git repo
 
 # Additional Notes
 * In the JS folder there is an example module exported, and the -interface file using it. Feel free to use these as a template, but should be replaced and the files renamed.
